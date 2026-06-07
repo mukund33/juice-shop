@@ -1,0 +1,66 @@
+{
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "nodejsscan",
+          "rules": [
+            {
+              "id": "node_md5",
+              "name": "NodeMd5",
+              "properties": {
+                "tags": [
+                  "security",
+                  "external/cwe/cwe-327"
+                ]
+              },
+              "helpUri": "https://ajinabraham.github.io/nodejsscan/#node_md5"
+            }
+          ],
+          "version": "0.4.3",
+          "informationUri": "https://github.com/ajinabraham/njsscan",
+          "semanticVersion": "0.4.3"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "endTimeUtc": "2026-06-07T18:21:20Z"
+        }
+      ],
+      "results": [
+        {
+          "message": {
+            "text": "MD5 is a a weak hash which is known to have collision. Use a strong hashing function."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "      const md5 = crypto.createHash('md5')"
+                  },
+                  "endColumn": 43,
+                  "endLine": 77,
+                  "startColumn": 19,
+                  "startLine": 77
+                },
+                "artifactLocation": {
+                  "uri": "Gruntfile.js"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "owasp-web": "A9: Using Components with Known Vulnerabilities",
+            "cwe": "CWE-327: Use of a Broken or Risky Cryptographic Algorithm"
+          },
+          "ruleId": "node_md5",
+          "ruleIndex": 0
+        }
+      ]
+    }
+  ],
+  "version": "2.1.0",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"
+}

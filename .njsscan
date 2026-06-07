@@ -1,0 +1,8 @@
+---
+exclude-dirs:
+  - node_modules
+  - frontend/node_modules
+  - data/static/codefixes
+  - build
+  - dist
+  - rsn
