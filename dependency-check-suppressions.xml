@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+
+  <!--
+    OWASP Juice Shop — OWASP Dependency Check Suppressions
+    These packages are intentionally vulnerable as part of the training application.
+    DO NOT remove these suppressions without updating the corresponding challenges.
+    See: data/static/challenges.yml and CLAUDE.md for context.
+  -->
+
+  <!-- express-jwt@0.1.3: intentionally old, algorithm confusion challenge -->
+  <suppress>
+    <notes>Intentionally vulnerable: JWT algorithm confusion challenge</notes>
+    <packageUrl regex="true">^pkg:npm/express\-jwt@.*$</packageUrl>
+    <vulnerabilityName regex="true">.*</vulnerabilityName>
+  </suppress>
+
+  <!-- jsonwebtoken@0.4.0: intentionally old for JWT forging challenge -->
+  <suppress>
+    <notes>Intentionally vulnerable: JWT forging challenge</notes>
+    <packageUrl regex="true">^pkg:npm/jsonwebtoken@.*$</packageUrl>
+    <vulnerabilityName regex="true">.*</vulnerabilityName>
+  </suppress>
+
+  <!-- sanitize-html@1.4.2: intentionally allows XSS for XSS challenges -->
+  <suppress>
+    <notes>Intentionally vulnerable: XSS bypass challenges</notes>
+    <packageUrl regex="true">^pkg:npm/sanitize\-html@.*$</packageUrl>
+    <vulnerabilityName regex="true">.*</vulnerabilityName>
+  </suppress>
+
+  <!-- unzipper@0.8.14: intentionally allows path traversal for zip challenge -->
+  <suppress>
+    <notes>Intentionally vulnerable: zip slip / path traversal challenge</notes>
+    <packageUrl regex="true">^pkg:npm/unzipper@.*$</packageUrl>
+    <vulnerabilityName regex="true">.*</vulnerabilityName>
+  </suppress>
+
+</suppressions>

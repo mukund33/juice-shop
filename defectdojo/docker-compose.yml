@@ -1,0 +1,93 @@
+version: "3.8"
+
+# DefectDojo — Unified Security Dashboard
+# Usage:
+#   docker compose up -d
+#   open http://localhost:8080
+#   Default credentials: admin / defectdojo  (change on first login)
+#   Get API token: http://localhost:8080/api/key-v2
+#
+# Configure GitHub secrets after setup:
+#   DEFECTDOJO_URL = http://your-host:8080
+#   DEFECTDOJO_API_TOKEN = <token from /api/key-v2>
+
+services:
+  nginx:
+    image: defectdojo/defectdojo-nginx:latest
+    depends_on:
+      - uwsgi
+    ports:
+      - "8080:8080"
+    environment:
+      NGINX_METRICS_ENABLED: "false"
+    volumes:
+      - defectdojo_media:/app/media
+    restart: unless-stopped
+
+  uwsgi:
+    image: defectdojo/defectdojo-django:latest
+    depends_on:
+      - postgres
+      - redis
+    entrypoint: ["/entrypoint-uwsgi.sh"]
+    environment:
+      DD_DEBUG: "False"
+      DD_ALLOWED_HOSTS: "*"
+      DD_DATABASE_URL: "postgresql://defectdojo:defectdojo@postgres:5432/defectdojo"
+      DD_CELERY_BROKER_URL: "redis://redis:6379/0"
+      DD_SECRET_KEY: "change-me-in-production-use-a-long-random-string"
+      DD_CREDENTIAL_AES_256_KEY: "change-me-in-production-0000000000"
+      DD_ADMIN_USER: "admin"
+      DD_ADMIN_PASSWORD: "defectdojo"
+      DD_INITIALIZE: "true"
+    volumes:
+      - defectdojo_media:/app/media
+    restart: unless-stopped
+
+  celerybeat:
+    image: defectdojo/defectdojo-django:latest
+    depends_on:
+      - postgres
+      - redis
+    entrypoint: ["/entrypoint-celery-beat.sh"]
+    environment:
+      DD_DATABASE_URL: "postgresql://defectdojo:defectdojo@postgres:5432/defectdojo"
+      DD_CELERY_BROKER_URL: "redis://redis:6379/0"
+      DD_SECRET_KEY: "change-me-in-production-use-a-long-random-string"
+      DD_CREDENTIAL_AES_256_KEY: "change-me-in-production-0000000000"
+    volumes:
+      - defectdojo_media:/app/media
+    restart: unless-stopped
+
+  celeryworker:
+    image: defectdojo/defectdojo-django:latest
+    depends_on:
+      - postgres
+      - redis
+    entrypoint: ["/entrypoint-celery-worker.sh"]
+    environment:
+      DD_DATABASE_URL: "postgresql://defectdojo:defectdojo@postgres:5432/defectdojo"
+      DD_CELERY_BROKER_URL: "redis://redis:6379/0"
+      DD_SECRET_KEY: "change-me-in-production-use-a-long-random-string"
+      DD_CREDENTIAL_AES_256_KEY: "change-me-in-production-0000000000"
+    volumes:
+      - defectdojo_media:/app/media
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: defectdojo
+      POSTGRES_USER: defectdojo
+      POSTGRES_PASSWORD: defectdojo
+    volumes:
+      - defectdojo_postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  defectdojo_media:
+  defectdojo_postgres:
